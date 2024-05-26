@@ -9,8 +9,9 @@ openRadio = function()
     SendNUIMessage({
         action = "openUI", 
         showMemberList = Config.showMemberListButton,
+        showSpeaker = Config.showSpeakerButton,
         isInChannel = getRadioChannel(),
-        volume = getRadioVolume() or 10,
+        volume = getRadioVolume() or 30,
         voiceSystem = Config.VoiceSystem,
         locales = Translation[Config.Locale]
     })
@@ -21,10 +22,18 @@ end
 exports('openRadio', openRadio)
 RegisterNetEvent('msk_radio:openRadio', openRadio)
 
-isRadioOpen = function()
+getIsRadioOpen = function()
     return isRadioOpen
 end
-exports('isRadioOpen', isRadioOpen)
+exports('isRadioOpen', getIsRadioOpen)
+
+isEncryptedChannel = function(channel)
+    if Config.EncryptedChannels[tonumber(channel)] then
+        return true
+    end
+    return false
+end
+exports('isEncryptedChannel', isEncryptedChannel)
 
 hasChannelPassword = function(channel)
     return MSK.Trigger('msk_radio:hasChannelPassword', channel)
@@ -36,31 +45,26 @@ checkChannelPassword = function(channel, password)
 end
 exports('checkChannelPassword', checkChannelPassword)
 
-isEncryptedChannel = function(channel)
-    if Config.EncryptedChannels[tonumber(channel)] then
-        return true
-    end
-    return false
-end
-exports('isEncryptedChannel', isEncryptedChannel)
-
 setChannelPassword = function(channel, password)
     TriggerServerEvent('msk_radio:registerChannelPassword', channel, password)
 end
-exports('setChannelPassword', setChannelPassword)
+
+isFirstInChannel = function(channel)
+    return MSK.Trigger('msk_radio:isFirstInChannel', channel)
+end
 
 getRadioChannel = function()
     local channel
 
     if Config.VoiceSystem == 'saltychat' then
-        channel = exports.saltychat:GetRadioChannel(true)
+        channel = exports["saltychat"]:GetRadioChannel(true)
     elseif Config.VoiceSystem == 'pma' then
         channel = Player(GetPlayerServerId(PlayerId())).state.radioChannel
     elseif Config.VoiceSystem == 'tokovoip' then
         channel = exports["tokovoip_script"]:getPlayerData(GetPlayerServerId(PlayerId()), 'radio:channel')
     end
 
-    return channel
+    return tonumber(channel)
 end
 exports('getRadioChannel', getRadioChannel)
 
@@ -68,23 +72,20 @@ getRadioVolume = function()
     local volume
 
     if Config.VoiceSystem == 'saltychat' then
-        volume = Round(exports.saltychat:GetRadioVolume() * 100)
+        volume = Round(exports["saltychat"]:GetRadioVolume() * 100)
     elseif Config.VoiceSystem == 'pma' then
-        volume = Player(GetPlayerServerId(PlayerId())).state.radioVolume
+        volume = exports["pma-voice"]:getRadioVolume()
     elseif Config.VoiceSystem == 'tokovoip' then
         volume = tokoVoipRadioVolume
     end
 
-    return volume
+    return tonumber(volume)
 end
 exports('getRadioVolume', getRadioVolume)
 
-isFirstInChannel = function(channel)
-    return MSK.Trigger('msk_radio:isFirstInChannel', channel)
-end
-exports('isFirstInChannel', isFirstInChannel)
-
 setRadioChannel = function(channel)
+    channel = tonumber(channel)
+
     if Config.VoiceSystem == 'saltychat' then
         exports["saltychat"]:SetRadioChannel(channel, true)
     elseif Config.VoiceSystem == 'pma' then
@@ -99,6 +100,8 @@ end
 exports('setRadioChannel', setRadioChannel)
 
 removeRadioChannel = function(channel)
+    if channel then channel = tonumber(channel) end
+
     if Config.VoiceSystem == 'saltychat' then
         exports["saltychat"]:SetRadioChannel(nil, true)
     elseif Config.VoiceSystem == 'pma' then
@@ -113,6 +116,8 @@ end
 exports('removeRadioChannel', removeRadioChannel)
 
 setRadioVolume = function(volume)
+    volume = tonumber(volume)
+
     if Config.VoiceSystem == 'saltychat' then
         volume = volume / 100
         exports["saltychat"]:SetRadioVolume(volume)

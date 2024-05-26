@@ -15,16 +15,16 @@
       <div class="container" id="ui" style="display:none">
          <span class="content">
             <div class="top-banner">
-               <div class="top-banner-title"><span class="colored-mask"><i class="fa-solid fa-walkie-talkie"></i></span> <span class="white-mask">Funkgerät</span></div>
+               <div class="top-banner-title"><span class="colored-mask"><i class="fa-solid fa-walkie-talkie"></i></span> <span class="white-mask" id="top-banner-title">Funkgerät</span></div>
             </div>
             <div id="main-page" style="display:all">
-               <div class="info-title white-mask">Gib eine Frequenz ein</div>
+               <div class="info-title white-mask" id="main-page-info-title">Gib eine Frequenz ein</div>
                <input class="frequence-input" type="number" placeholder="Frequenz">
-               <button class="enter-channel-button"><span class="white-mask">Bestätigen</span></button>
+               <button class="enter-channel-button"><span class="white-mask" id="enter-channel-button-text">Bestätigen</span></button>
             </div>
             <div id="joined-page" style="display:none">
-               <div class="info-title"><span class="white-mask">Aktuelle Frequenz</span> <span class="colored-mask" style="font-size:1.6vh" id="current-frequence">1337</span></div>
-               <button class="leave-channel-button"><span class="white-mask">Verlassen</span></button>
+               <div class="info-title"><span class="white-mask" id="join-page-info-title">Aktuelle Frequenz</span> <span class="colored-mask" style="font-size:1.6vh" id="current-frequence">1337</span></div>
+               <button class="leave-channel-button"><span class="white-mask" id="leave-channel-button-text">Verlassen</span></button>
                <div class="member-list" style="display:none">
                   <div class="member-list-refresh-button" id="refresh-button"><i class="fa-solid fa-arrows-rotate"></i></div>
                   <div class="member-list-scroll" id="member-list">
@@ -35,22 +35,22 @@
                   </div>
                </div>
                <div class="volume-slider">
-                  <div class="volume-slider-title"><span class="white-mask">Lautstärke</span> <span class="colored-mask" id="volume-percent">100%</span></div>
+                  <div class="volume-slider-title"><span class="white-mask" id="volume-slider-title">Lautstärke</span> <span class="colored-mask" id="volume-percent">100%</span></div>
                   <input type="range" id="volume-slider" min="0" max="100" value="0" oninput="handleSlider()">
                </div>
             </div>
             <label class="checkbox-item">
-            <span class="checkbox-text white-mask">Streamer Mode</span>
+            <span class="checkbox-text white-mask" id="streamer-mode-checkbox-text">Streamer Mode</span>
             <input type="checkbox" id="streamer-mode-checkbox">
             <span class="checkmark"></span>
             </label>
             <label class="checkbox-item" id="speaker-checkbox-container" style="display:none">
-            <span class="checkbox-text white-mask">Lautsprecher</span>
+            <span class="checkbox-text white-mask" id="speaker-checkbox-text">Lautsprecher</span>
             <input type="checkbox" id="speaker-checkbox">
             <span class="checkmark"></span>
             </label>
             <label class="checkbox-item" id="member-list-checkbox-container" style="display:none">
-            <span class="checkbox-text white-mask">Mitglieder anzeigen</span>
+            <span class="checkbox-text white-mask" id="member-list-checkbox-text">Mitglieder anzeigen</span>
             <input type="checkbox" id="member-list-checkbox">
             <span class="checkmark"></span>
             </label>
@@ -61,7 +61,7 @@
             </div>
             <div class="popup-info-title white-mask">Lege ein Passwort fest</div>
             <input class="popup-input" type="number" placeholder="Ohne Passwort bestätigen">
-            <button class="popup-button">Bestätigen</button>
+            <button class="popup-button"><span class="white-mask" id="popup-button-text">Bestätigen</span></button>
          </div>
       </div>
       <script src="script.js" type="text/javascript"></script>

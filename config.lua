@@ -26,7 +26,7 @@ Config.DisconnectOnItemRemove = true -- Enable if you want to disconnect from ra
 Config.Command = {
     enable = true, -- Use the Command to open the Radio
     command = 'radio',
-    checkItem = false -- Enable if you want to check if the player has the Item
+    checkItem = true -- Enable if you want to check if the player has the Item
 }
 
 Config.Hotkey = {
@@ -40,8 +40,10 @@ Config.Item = {
 }
 ----------------------------------------------------------------
 Config.EncryptedChannels = {
-    [1] = {'police', 'fib'},
-    [2] = {'police', 'fib'},
+    [1] = {'police'},
+    [1.1] = {'police'},
+    [2] = {'fib'},
+    [2.1] = {'fib'},
     [3] = {'ambulance'},
     [4] = {'doj'},
 }

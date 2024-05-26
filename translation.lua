@@ -1,5 +1,3 @@
--- Translations for NUI are WIP (Work in Progress)
--- Please change the language in the html file
 Translation = {
     ['de'] = {
         -- NUI

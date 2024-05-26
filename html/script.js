@@ -1,14 +1,14 @@
 var showMemberList
 var voiceSystem
-var locales
+var speaker
 
 window.addEventListener('message', function(event) {
   const data = event.data
   if (data.action == "openUI") {
     showMemberList = data.showMemberList
     voiceSystem = data.voiceSystem
-    locales = data.locales
-    // setLanguage(data.locales) // Translations are WIP - Please change the language in the html file
+    speaker = data.showSpeaker
+    setLanguage(data.locales)
 
     $(".content").css("filter", "none")
     $(".popup").hide()
@@ -36,7 +36,6 @@ $(document).ready(function() {
     })
   })
   $(".leave-channel-button").click(function() {
-    // setLanguage(locales) // Translations are WIP - Please change the language in the html file
     $.post(`http://${GetParentResourceName()}/leave-channel`, JSON.stringify({frequence: $(".frequence-input").val()}))
 
     $(".frequence-input").val("")
@@ -134,7 +133,6 @@ document.onkeyup = function (event) {
 }
 
 function showJoinPage() {
-  // $(".info-title").text(locales.current_frequenz) // Translations are WIP - Please change the language in the html file
   $("#joined-page").fadeIn("fast")
   $("#main-page").fadeOut("fast")
 
@@ -147,7 +145,7 @@ function showJoinPage() {
   $(".container").addClass("container-joined-page-active")
   $("#current-frequence").text($(".frequence-input").val())
 
-  if (voiceSystem == 'saltychat') {
+  if (speaker & voiceSystem == 'saltychat') {
     $("#speaker-checkbox-container").show()
   }
 
@@ -162,8 +160,6 @@ function showJoinPage() {
 function showPopup() {
   $(".content").css("filter", "blur(0.6vh")
   $(".popup").fadeIn("fast")
-  $("#popup-title").text("Passwort festlegen")
-  $(".popup-info-title").text("Lege ein Passwort fest")
 }
 
 function closePopup() {
@@ -187,25 +183,26 @@ function handleSlider(volume) {
 
   $.post(`http://${GetParentResourceName()}/change-volume`, JSON.stringify({volume: percent}))
 }
+// handleSlider(100)
 
 function closeUI() {
   $("#ui").fadeOut("fast")
   $.post(`http://${GetParentResourceName()}/closeUI`)
 }
 
-// Translations are WIP - Please change the language in the html file
 function setLanguage(locales) {
-  // $(".top-banner-title").text(locales.radio_header)
-  // $(".info-title").text(locales.insert_frequenz)
-  // $(".frequence-input").placeholder(locales.insert_frequenz_placeholder)
-  $(".enter-channel-button").text(locales.confirm)
-  $(".leave-channel-button").text(locales.leave)
-  $(".volume-slider-title").text(locales.volume)
-  // $(".checkbox-text").text(locales.streamer_mode)
-  // $(".checkbox-text").text(locales.speaker)
-  // $(".checkbox-text").text(locales.show_members)
-  $(".popup-title").text(locales.create_password)
+  $("#top-banner-title").text(locales.radio_header)
+  $("#main-page-info-title").text(locales.insert_frequenz)
+  $("#join-page-info-title").text(locales.current_frequenz)
+  $(".frequence-input").attr("placeholder", locales.insert_frequenz_placeholder)
+  $("#enter-channel-button-text").text(locales.confirm)
+  $("#leave-channel-button-text").text(locales.leave)
+  $("#volume-slider-title").text(locales.volume)
+  $("#streamer-mode-checkbox-textt").text(locales.streamer_mode)
+  $("#speaker-checkbox-text").text(locales.speaker)
+  $("#member-list-checkbox-text").text(locales.show_members)
+  $("#popup-title").text(locales.create_password)
   $(".popup-info-title").text(locales.create_password_subtitle)
-  // $(".popup-input").placeholder(locales.create_password_placeholder)
-  $(".popup-button").text(locales.confirm)
+  $(".popup-input").attr("placeholder", locales.create_password_placeholder)
+  $("#popup-button-text").text(locales.confirm)
 }

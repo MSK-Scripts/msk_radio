@@ -20,7 +20,7 @@ getChannelMembers = function(channel, source)
     elseif Config.VoiceSystem == 'pma' then
         local data = exports['pma-voice']:getPlayersInRadioChannel(channel)
 
-        for playerId, isTalking in pairs(players) do
+        for playerId, isTalking in pairs(data) do
             local playerName = GetPlayerName(playerId)
 
             channelMembers[#channelMembers + 1] = {playerId = playerId, name = playerName}
@@ -30,9 +30,9 @@ getChannelMembers = function(channel, source)
             end
         end
     elseif Config.VoiceSystem == 'tokovoip' then
-        local players = MSK.Trigger('msk_radio:getTokovoipPlayers', source, GetPlayers(), channel)
+        local data = MSK.Trigger('msk_radio:getTokovoipPlayers', source, GetPlayers(), channel)
 
-        for k, playerId in pairs(players) do
+        for k, playerId in pairs(data) do
             local playerName = GetPlayerName(playerId)
 
             channelMembers[#channelMembers + 1] = {playerId = playerId, name = playerName}
@@ -48,23 +48,26 @@ end
 exports('getChannelMembers', getChannelMembers)
 
 hasChannelPassword = function(channel)
+    channel = tonumber(channel)
     return ChannelsWithPassword[channel] or false
 end
 exports('hasChannelPassword', hasChannelPassword)
 
 checkChannelPassword = function(channel, password)
+    channel = tonumber(channel)
     return ChannelsWithPassword[channel].password == password
 end
 exports('checkChannelPassword', checkChannelPassword)
 
 isFirstInChannel = function(channel, source)
+    channel = tonumber(channel)
     local channelMembers = getChannelMembers(channel, source) -- source only for tokovoip
 
     return #channelMembers == 0
 end
-exports('isFirstInChannel', isFirstInChannel)
 
 registerChannelPassword = function(channel, password)
+    channel = tonumber(channel)
     database[channel] = password
 
     ChannelsWithPassword[channel] = {
@@ -74,15 +77,16 @@ registerChannelPassword = function(channel, password)
 
     saveDatabase(database)
 end
-exports('registerChannelPassword', registerChannelPassword)
 RegisterNetEvent('msk_radio:registerChannelPassword', registerChannelPassword)
 
 addPlayerToRadio = function(playerId, channel)
+    channel = tonumber(channel)
     if not ChannelsWithPassword[channel] then return end
     table.insert(ChannelsWithPassword[channel].members, {playerId = playerId, name = GetPlayerName(playerId)})
 end
 
 removePlayerFromRadio = function(playerId, channel)
+    channel = tonumber(channel)
     if not ChannelsWithPassword[channel] then return end
 
     for k, v in pairs(ChannelsWithPassword[channel].members) do

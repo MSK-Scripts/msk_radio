@@ -131,6 +131,5 @@ end
 
 AddEventHandler('onResourceStop', function(resource)
 	if GetCurrentResourceName() ~= resource then return end
-
     removeRadioObject()
 end)
