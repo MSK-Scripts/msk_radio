@@ -4,8 +4,11 @@ tokoVoipRadioVolume = 100
 
 openRadio = function()
     if isRadioOpen then return end
+    logging('debug', 'Open Radio')
     isRadioOpen = true
+    playRadioInHand()
 
+    SetNuiFocus(true, true)
     SendNUIMessage({
         action = "openUI", 
         showMemberList = Config.showMemberListButton,
@@ -15,12 +18,23 @@ openRadio = function()
         voiceSystem = Config.VoiceSystem,
         locales = Translation[Config.Locale]
     })
-    SetNuiFocus(true, true)
-
-    playRadioInHand()
 end
 exports('openRadio', openRadio)
 RegisterNetEvent('msk_radio:openRadio', openRadio)
+
+closeRadio = function(notSend)
+    logging('debug', 'Close Radio')
+    isRadioOpen = false
+    removeRadioObject()
+    SetNuiFocus(false, false)
+
+    if notSend then return end
+    SendNUIMessage({
+        action = "closeUI",
+    })
+end
+exports('closeRadio', closeRadio)
+RegisterNetEvent('msk_radio:closeRadio', closeRadio)
 
 getIsRadioOpen = function()
     return isRadioOpen
@@ -74,7 +88,7 @@ getRadioVolume = function()
     if Config.VoiceSystem == 'saltychat' then
         volume = Round(exports["saltychat"]:GetRadioVolume() * 100)
     elseif Config.VoiceSystem == 'pma' then
-        volume = exports["pma-voice"]:getRadioVolume()
+        volume = Round(exports["pma-voice"]:getRadioVolume() * 100)
     elseif Config.VoiceSystem == 'tokovoip' then
         volume = tokoVoipRadioVolume
     end
@@ -85,6 +99,7 @@ exports('getRadioVolume', getRadioVolume)
 
 setRadioChannel = function(channel)
     channel = tonumber(channel)
+    logging('debug', 'setRadioChannel', channel)
 
     if Config.VoiceSystem == 'saltychat' then
         exports["saltychat"]:SetRadioChannel(channel, true)
@@ -101,12 +116,13 @@ exports('setRadioChannel', setRadioChannel)
 
 removeRadioChannel = function(channel)
     if channel then channel = tonumber(channel) end
+    logging('debug', 'removeRadioChannel', channel)
 
     if Config.VoiceSystem == 'saltychat' then
         exports["saltychat"]:SetRadioChannel(nil, true)
     elseif Config.VoiceSystem == 'pma' then
-        exports["pma-voice"]:setVoiceProperty('radioEnabled', false)
         exports["pma-voice"]:SetRadioChannel(0)
+        exports["pma-voice"]:setVoiceProperty('radioEnabled', false)
     elseif Config.VoiceSystem == 'tokovoip' then
         exports["tokovoip_script"]:removePlayerFromRadio(channel or getRadioChannel())
     end
@@ -117,6 +133,7 @@ exports('removeRadioChannel', removeRadioChannel)
 
 setRadioVolume = function(volume)
     volume = tonumber(volume)
+    logging('debug', 'setRadioVolume', volume)
 
     if Config.VoiceSystem == 'saltychat' then
         volume = volume / 100
@@ -131,6 +148,8 @@ end
 exports('setRadioVolume', setRadioVolume)
 
 setRadioSpeaker = function(active)
+    logging('debug', 'setRadioSpeaker', active)
+
     if Config.VoiceSystem == 'saltychat' then
         exports["saltychat"]:SetRadioSpeaker(active)
     elseif Config.VoiceSystem == 'pma' then

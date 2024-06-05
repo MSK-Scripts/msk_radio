@@ -1,10 +1,10 @@
-fx_version 'adamant'
+fx_version 'cerulean'
 games { 'gta5' }
 
 author 'Musiker15 - MSK Scripts'
 name 'msk_radio'
 description 'Radio System'
-version '1.0.0'
+version '1.0.1'
 
 lua54 'yes'
 

@@ -9,6 +9,7 @@ window.addEventListener('message', function(event) {
     voiceSystem = data.voiceSystem
     speaker = data.showSpeaker
     setLanguage(data.locales)
+    handleSlider(data.volume)
 
     $(".content").css("filter", "none")
     $(".popup").hide()
@@ -17,17 +18,18 @@ window.addEventListener('message', function(event) {
 
     if (data.isInChannel) {
       $(".frequence-input").val(data.isInChannel)
-      handleSlider(data.volume)
       showJoinPage()
     }
   } else if (data.action == "refreshVolume") {
     handleSlider(data.volume)
+  } else if (data.action == "closeUI") {
+    closeUI()
   }
 })
 
 $(document).ready(function() {
   $(".enter-channel-button").click(function() {
-    $.post(`http://${GetParentResourceName()}/enter-channel`, JSON.stringify({frequence: $(".frequence-input").val()}), function(resp) {
+    $.post(`https://${GetParentResourceName()}/enter-channel`, JSON.stringify({frequence: $(".frequence-input").val()}), function(resp) {
       if (resp == 'input') {
         showPopup()
       } else if (resp == 'OK') {
@@ -36,7 +38,7 @@ $(document).ready(function() {
     })
   })
   $(".leave-channel-button").click(function() {
-    $.post(`http://${GetParentResourceName()}/leave-channel`, JSON.stringify({frequence: $(".frequence-input").val()}))
+    $.post(`https://${GetParentResourceName()}/leave-channel`, JSON.stringify({frequence: $(".frequence-input").val()}))
 
     $(".frequence-input").val("")
     $("#joined-page").fadeOut("fast")
@@ -49,7 +51,7 @@ $(document).ready(function() {
     $("#main-page").fadeIn("fast")
   })
   $("#refresh-button").click(function() {
-    $.post(`http://${GetParentResourceName()}/refresh-member`, JSON.stringify({frequence: $(".frequence-input").val()}), function(resp) {
+    $.post(`https://${GetParentResourceName()}/refresh-member`, JSON.stringify({frequence: $(".frequence-input").val()}), function(resp) {
       if (resp) {
         $("#member-list").empty()
 
@@ -62,7 +64,7 @@ $(document).ready(function() {
     })
   })
   $(".popup-button").click(function() {
-    $.post(`http://${GetParentResourceName()}/popup-action`, JSON.stringify({frequence: $(".frequence-input").val(), password: $(".popup-input").val()}), function(resp) {
+    $.post(`https://${GetParentResourceName()}/popup-action`, JSON.stringify({frequence: $(".frequence-input").val(), password: $(".popup-input").val()}), function(resp) {
       if (resp == 'OK') {
         closePopup()
         showJoinPage()
@@ -78,7 +80,7 @@ $(document).ready(function() {
       $(".container").addClass("container-member-list-active")
       $("#member-list").empty()
 
-      $.post(`http://${GetParentResourceName()}/refresh-member`, JSON.stringify({frequence: $(".frequence-input").val()}), function(resp) {
+      $.post(`https://${GetParentResourceName()}/refresh-member`, JSON.stringify({frequence: $(".frequence-input").val()}), function(resp) {
         if (resp) {
           $("#member-list").empty()
 
@@ -122,7 +124,7 @@ $(document).ready(function() {
       $(this).attr("checked", true)
     }
 
-    $.post(`http://${GetParentResourceName()}/radio-speaker`, JSON.stringify({activate: isChecked}))
+    $.post(`https://${GetParentResourceName()}/radio-speaker`, JSON.stringify({activate: isChecked}))
   })
 })
 
@@ -181,13 +183,14 @@ function handleSlider(volume) {
   slider.style.background = `linear-gradient(to right, var(--slider-inner) ${percent}%, var(--slider-outer) ${percent}%)`
   $("#volume-percent").text(percent + "%")
 
-  $.post(`http://${GetParentResourceName()}/change-volume`, JSON.stringify({volume: percent}))
+  $.post(`https://${GetParentResourceName()}/change-volume`, JSON.stringify({volume: percent}))
 }
 // handleSlider(100)
 
 function closeUI() {
+  closePopup()
   $("#ui").fadeOut("fast")
-  $.post(`http://${GetParentResourceName()}/closeUI`)
+  $.post(`https://${GetParentResourceName()}/closeUI`)
 }
 
 function setLanguage(locales) {

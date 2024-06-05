@@ -54,16 +54,20 @@ end)
 -- Register NUI Callbacks
 ----------------------------------------------------------------
 RegisterNUICallback("enter-channel", function(data, cb)
+    logging('debug', 'Enter Channel: ', data.frequence or 'not found')
     if not data.frequence or data.frequence == '' then return end
     local isEncryptedChannel = isEncryptedChannel(data.frequence)
 
     if not isEncryptedChannel and hasChannelPassword(data.frequence) then
+        logging('debug', 'Channel is not encrypted but has a password')
         return cb('input') -- NUI Callback opens Passwort Input
     elseif not isEncryptedChannel and isFirstInChannel(data.frequence) then
+        logging('debug', 'Channel is not encrypted, password will be set...')
         return cb('input') -- NUI Callback opens Passwort Input
     end
 
     if isEncryptedChannel and not MSK.TableContains(Config.EncryptedChannels[tonumber(data.frequence)], ESX.PlayerData.job.name) then
+        logging('debug', 'Channel is encrypted but you do not have the correct job')
         cb('denied')
         return Config.Notification(nil, Translation[Config.Locale]['channel_encrypted'], 'error')
     end
@@ -80,7 +84,9 @@ end)
 
 RegisterNUICallback("popup-action", function(data, cb)
     if not hasChannelPassword(data.frequence) then
+        logging('debug', 'Channel has not a password')
         if data.password and data.password ~= '' then
+            logging('debug', 'Set passwort to:', data.password)
             setChannelPassword(data.frequence, data.password)
         end
         setRadioChannel(data.frequence)
@@ -88,10 +94,12 @@ RegisterNUICallback("popup-action", function(data, cb)
         local isPasswordCorrect = checkChannelPassword(data.frequence, data.password)
 
         if not isPasswordCorrect then
+            logging('debug', 'Passwort not correct', data.password)
             cb('failed') -- NUI Callback password is wrong
             return Config.Notification(nil, Translation[Config.Locale]['password_invalid'], 'error')
         end
 
+        logging('debug', 'Passwort correct', data.password)
         setRadioChannel(data.frequence)
     end
 
@@ -119,9 +127,7 @@ RegisterNUICallback("radio-speaker", function(data)
 end)
 
 RegisterNUICallback("closeUI", function()
-    isRadioOpen = false
-    SetNuiFocus(false, false)
-    removeRadioObject()
+    closeRadio(true)
 end)
 
 logging = function(code, ...)

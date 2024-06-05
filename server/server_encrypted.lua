@@ -49,8 +49,11 @@ GithubUpdater = function()
 
     if Config.VersionChecker then
         PerformHttpRequest('https://raw.githubusercontent.com/Musiker15/VERSIONS/main/Radio.json', function(errorCode, jsonString, headers)
-            print("###############################")
-			if not jsonString then print(resourceName .. '^1 Update Check failed! ^3Please Update to the latest Version: ^9https://keymaster.fivem.net/^0') print("###############################") return end
+			if not jsonString then 
+                print(resourceName .. '^1Update Check failed ^3Please Update to the latest Version: ^9https://keymaster.fivem.net/^0')
+                print(resourceName .. '^2 ✓ Resource loaded^0 - ^5Current Version: ^0' .. CurrentVersion)
+                return
+            end
 
 			local decoded = json.decode(jsonString)
             local version = decoded[1].version
@@ -66,7 +69,7 @@ GithubUpdater = function()
 						if decoded[i]['version'] == CurrentVersion then
 							break
 						elseif not isVersionIncluded(decoded, CurrentVersion) then
-							print('^1You are using the ^3BETA VERSION^1 of ^0' .. resourceName)
+							print('^1You are using an^3 UNSUPPORTED VERSION^1 of ^0' .. resourceName)
 							break
 						end
 
@@ -79,10 +82,9 @@ GithubUpdater = function()
 						end
 					end
 				else
-					print('^1You are using the ^3BETA VERSION^1 of ^0' .. resourceName)
+					print('^1You are using the^3 BETA VERSION^1 of ^0' .. resourceName)
 				end
             end
-            print("###############################")
         end)
     else
         print(resourceName .. '^2 ✓ Resource loaded^0 - ^5Current Version: ^2' .. CurrentVersion .. '^0')

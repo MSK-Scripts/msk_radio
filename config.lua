@@ -13,7 +13,7 @@ Config.Notification = function(source, message, info)
     end
 end
 ----------------------------------------------------------------
-Config.VoiceSystem = 'saltychat' -- Set to 'saltychat', 'pma' or 'tokovoip'
+Config.VoiceSystem = 'pma' -- Set to 'saltychat', 'pma' or 'tokovoip'
 
 Config.showMemberListButton = true -- Show Members in your Radio Channel
 Config.showSpeakerButton = true -- Share radio talk with nearby players // Only for saltychat
