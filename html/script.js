@@ -4,6 +4,7 @@ var speaker
 
 window.addEventListener('message', function(event) {
   const data = event.data
+  
   if (data.action == "openUI") {
     showMemberList = data.showMemberList
     voiceSystem = data.voiceSystem
