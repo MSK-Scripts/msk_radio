@@ -13,6 +13,8 @@ Config.Notification = function(source, message, info)
     end
 end
 ----------------------------------------------------------------
+Config.Framework = 'ESX' -- Set to 'ESX' or 'QBCore'
+
 Config.VoiceSystem = 'pma' -- Set to 'saltychat', 'pma' or 'tokovoip'
 
 Config.showMemberListButton = true -- Show Members in your Radio Channel

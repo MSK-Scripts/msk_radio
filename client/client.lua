@@ -1,3 +1,7 @@
+if Config.Framework == 'QBCore' then
+    QBCore = exports['qb-core']:GetCoreObject()
+end
+
 if Config.Command.enable then
     RegisterCommand(Config.Command.command, function()
         if Config.Command.checkItem then
@@ -29,6 +33,14 @@ AddEventHandler('SaltyChat_RadioTrafficStateChanged', function(primaryReceive, p
     if primaryTransmit then
         playAnimationRadioTalking()
     elseif not primaryTransmit then
+        stopAnimationRadioTalking()
+    end
+end)
+
+AddEventHandler("pma-voice:radioActive", function(radioTalking)
+    if radioTalking then
+        playAnimationRadioTalking()
+    else
         stopAnimationRadioTalking()
     end
 end)
@@ -66,7 +78,16 @@ RegisterNUICallback("enter-channel", function(data, cb)
         return cb('input') -- NUI Callback opens Passwort Input
     end
 
-    if isEncryptedChannel and not MSK.TableContains(Config.EncryptedChannels[tonumber(data.frequence)], ESX.PlayerData.job.name) then
+    local playerJob, gang = 'unemployed', 'none'
+    if Config.Framework == 'ESX' then 
+        playerJob = ESX.PlayerData.job.name or 'unemployed'
+    elseif Config.Framework == 'QBCore' then 
+        local player = QBCore.Functions.GetPlayerData()
+        playerJob = player.job and player.job.name or 'unemployed'
+        gang = player.gang and player.gang.name or 'none'
+    end
+
+    if isEncryptedChannel and not MSK.TableContains(Config.EncryptedChannels[tonumber(data.frequence)], {playerJob, gang}) then
         logging('debug', 'Channel is encrypted but you do not have the correct job')
         cb('denied')
         return Config.Notification(nil, Translation[Config.Locale]['channel_encrypted'], 'error')

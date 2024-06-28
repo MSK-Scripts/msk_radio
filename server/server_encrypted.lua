@@ -13,16 +13,43 @@ getDatabase = function()
 end
 exports('getDatabase', getDatabase)
 
-AddEventHandler('onResourceStart', function(resource)
-	if GetCurrentResourceName() ~= resource then return end
+getIsResourceLoaded = function()
+    if Config.VoiceSystem == 'saltychat' then
+        return GetResourceState("saltychat")
+    elseif Config.VoiceSystem == 'pma' then
+        return GetResourceState("pma-voice")
+    elseif Config.VoiceSystem == 'tokovoip' then
+        return GetResourceState("tokovoip_script")
+    end
+end
 
+loadingChannels = function()
     for channel, password in pairs(database) do
         ChannelsWithPassword[channel] = {
             password = password,
-            members = getChannelMembers(channel)
+            members = {}
         }
     end
-end)
+
+    if getIsResourceLoaded() ~= 'missing' then
+        if getIsResourceLoaded() ~= 'started' then
+            while getIsResourceLoaded() ~= 'started' do
+                Wait(100)
+            end
+        end
+    end
+
+    if not getChannelMembers then
+        while not getChannelMembers do
+            Wait(100)
+        end
+    end
+
+    for channel, password in pairs(ChannelsWithPassword) do
+        ChannelsWithPassword[channel].members = getChannelMembers(channel)
+    end
+end
+loadingChannels()
 
 logging = function(code, ...)
     if not Config.Debug then return end

@@ -50,21 +50,21 @@ end
 exports('isEncryptedChannel', isEncryptedChannel)
 
 hasChannelPassword = function(channel)
-    return MSK.Trigger('msk_radio:hasChannelPassword', channel)
+    return MSK.Trigger('msk_radio:hasChannelPassword', tonumber(channel))
 end
 exports('hasChannelPassword', hasChannelPassword)
 
 checkChannelPassword = function(channel, password)
-    return MSK.Trigger('msk_radio:checkChannelPassword', channel, password)
+    return MSK.Trigger('msk_radio:checkChannelPassword', tonumber(channel), password)
 end
 exports('checkChannelPassword', checkChannelPassword)
 
 setChannelPassword = function(channel, password)
-    TriggerServerEvent('msk_radio:registerChannelPassword', channel, password)
+    TriggerServerEvent('msk_radio:registerChannelPassword', tonumber(channel), password)
 end
 
 isFirstInChannel = function(channel)
-    return MSK.Trigger('msk_radio:isFirstInChannel', channel)
+    return MSK.Trigger('msk_radio:isFirstInChannel', tonumber(channel))
 end
 
 getRadioChannel = function()
@@ -184,6 +184,7 @@ loadModel = function(modelHash)
 end
 
 playRadioInHand = function()
+    if not Config.RadioAnimation then return end
     local playerPed = PlayerPedId()
 
     loadAnimDict("cellphone@")
@@ -195,6 +196,7 @@ playRadioInHand = function()
 end
 
 removeRadioObject = function()
+    if not Config.RadioAnimation then return end
     local playerPed = PlayerPedId()
 
     StopAnimTask(playerPed, "cellphone@", "cellphone_text_read_base", 3.0)
@@ -204,13 +206,14 @@ removeRadioObject = function()
 end
 
 playAnimationRadioTalking = function()
+    if not Config.RadioAnimationTalking then return end
     loadAnimDict("random@arrests")
-    TaskPlayAnim(PlayerPedId(), "random@arrests", "generic_radio_chatter", 8.0, -8.0, -1, 49, 0, 0, 0, 0)
+    TaskPlayAnim(PlayerPedId(), "random@arrests", "generic_radio_chatter", 8.0, -8.0, -1, 49, 0, 0, 0, 0) -- Fast Animation
 end
 
 stopAnimationRadioTalking = function()
+    if not Config.RadioAnimationTalking then return end
     local playerPed = PlayerPedId()
 
-    StopAnimTask(playerPed, "random@arrests", "generic_radio_chatter", 8.0)
-    ClearPedTasks(playerPed)
+    StopAnimTask(playerPed, "random@arrests", "generic_radio_chatter", 8.0) -- Fast Animation
 end

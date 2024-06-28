@@ -1,10 +1,20 @@
+if Config.Framework == 'QBCore' then
+    QBCore = exports['qb-core']:GetCoreObject()
+end
+
 ----------------------------------------------------------------
 -- Register all Items
 ----------------------------------------------------------------
 if Config.Item.enable then
-    ESX.RegisterUsableItem(Config.Item.item, function(source)
-        TriggerClientEvent('msk_radio:openRadio', source)
-    end)
+    if Config.Framework == 'ESX' then 
+        ESX.RegisterUsableItem(Config.Item.item, function(source)
+            TriggerClientEvent('msk_radio:openRadio', source)
+        end)
+    elseif Config.Framework == 'QBCore' then 
+        QBCore.Functions.CreateUseableItem(Config.Item.item, function(source, item)
+            TriggerClientEvent('msk_radio:openRadio', source)
+        end)
+    end
 end
 
 ----------------------------------------------------------------

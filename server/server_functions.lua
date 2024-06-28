@@ -1,8 +1,9 @@
 getChannelMembers = function(channel, source)
+    channel = tonumber(channel)
     local channelMembers = {}
 
     if ChannelsWithPassword[channel] then
-        ChannelsWithPassword[channel].members = nil
+        ChannelsWithPassword[channel].members = {}
     end
 
     if Config.VoiceSystem == 'saltychat' then
@@ -48,20 +49,17 @@ end
 exports('getChannelMembers', getChannelMembers)
 
 hasChannelPassword = function(channel)
-    channel = tonumber(channel)
-    return ChannelsWithPassword[channel] or false
+    return ChannelsWithPassword[tonumber(channel)] or false
 end
 exports('hasChannelPassword', hasChannelPassword)
 
 checkChannelPassword = function(channel, password)
-    channel = tonumber(channel)
-    return ChannelsWithPassword[channel].password == password
+    return ChannelsWithPassword[tonumber(channel)].password == password
 end
 exports('checkChannelPassword', checkChannelPassword)
 
 isFirstInChannel = function(channel, source)
-    channel = tonumber(channel)
-    local channelMembers = getChannelMembers(channel, source) -- source only for tokovoip
+    local channelMembers = getChannelMembers(tonumber(channel), source) -- source only for tokovoip
 
     return #channelMembers == 0
 end
@@ -92,6 +90,7 @@ removePlayerFromRadio = function(playerId, channel)
     for k, v in pairs(ChannelsWithPassword[channel].members) do
         if v.playerId == playerId then
             ChannelsWithPassword[channel].members[k] = nil
+            break
         end
     end
 
